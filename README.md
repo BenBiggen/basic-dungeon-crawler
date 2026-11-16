@@ -5,3 +5,7 @@ MÅ FIKSE AT LOOTCHANCE() KUN RETURNER 2
 Har brukt chatgpt til å hjelpe meg når jeg sitter fast
 
 Fikk litt hjelp av ki til å forklare meg hvordan alle random funksjonene fungerer
+
+TING Å FIKSE:
+Spillet bugger seg om du dør i kamp
+Legg til system med våpen

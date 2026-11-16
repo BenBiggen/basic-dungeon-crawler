@@ -2,12 +2,21 @@ import random
 from random import randint, uniform
 
 globalDifficulty = 1
+gameActive = False
 
-def opprettKarakter():
-    name = input("Skriv inn navnet på karakteren din:")
-    player = player(name)  
+
+def ask(quest):
+    active = True
+    while active:
+        var = input(quest)
+    
+    return var
+
+
+
 
 def generateRoom():
+    global globalDifficulty
     difficulty = max(1, globalDifficulty + uniform(-0.5, 0.5))
     enemyCount = randint(2, 4*int(difficulty))
 
@@ -15,6 +24,8 @@ def generateRoom():
 
     for i in range(enemyCount):
         newRoom.enemies.append(generateEnemy(difficulty))
+
+    globalDifficulty =+ 0.1
 
     return newRoom
 
@@ -28,7 +39,7 @@ def generateEnemy(difficulty):
     return enemy(hp, damage, name)
 
 def lootChance(): # 2 er rare, 1 er uncommon og 0 er common
-    rng = min(1, randint(1, 100)-(globalDifficulty-1))
+    rng = max(1, randint(1, 100)-(globalDifficulty-1))
     if rng <= 10:
         return 2
     elif rng <= 40:
@@ -36,9 +47,44 @@ def lootChance(): # 2 er rare, 1 er uncommon og 0 er common
     else:
         return 0
 
+
 def armorPull():
     typer = ["helmet", "boots", "leggings", "chestplate"]
     return armorTable[random.choice(typer)][lootChance()]
+
+
+def choice(choice1, choice2):
+    while True:
+        choice = input(f"1. {choice1}, 2. {choice2}:").strip()
+        if choice != "1" and choice != "2":
+            continue
+        else:
+            return int(choice)
+        
+
+
+
+def fight(player, enemy):
+    while player.hp > 0 and enemy.hp > 0:
+        print(f"{player.name}: {player.hp}")
+        print(f"{enemy.name} (fiende): {enemy.hp}")
+
+        choice1 = choice("Angrip", "Flykt") #1 for angrip og 2 for beskytt
+
+        if choice1 == 1:
+            damage = 30 #midlertiding (skal bytte ut med player.heldweapon.damage eller no sånt)
+            #Husk at enemy skal ha egen damage
+            enemy.hpChange(-damage)
+
+            print(f"Du gjorde {damage} skade på {enemy.name}")
+
+            if enemy.hp > 0:
+                player.hp -= enemy.damage
+                print(f"Du blir angrepet av {enemy.name}")
+
+        elif choice1 == 2:
+            return False
+
 
 
 
@@ -50,13 +96,19 @@ class room:
         self.loot = []
 
 class player:
-    def __init__(self, name):
+    def __init__(self):
         self.hp = 100
         self.armor = 1
         self.armorPieces = {}
         self.heldWeapon = {}
-        self.name = name
         self.wealth = 0
+
+    def hpChange(self, difference):
+            self.hp += difference
+
+    def createPlayer(self):
+        name = input("Skriv inn navnet på karakteren din:")
+        self.name = name
 
 class enemy:
     def __init__(self, hp, damage, name):
@@ -105,16 +157,22 @@ weaponTable = {
 }
 
 
+
 #Bare tester systemet her
 globalDifficulty = 3
 
-testRoom = generateRoom()
+##while gameActive == True:
 
-print("Room difficulty:", testRoom.difficulty)
-print("Enemy count:", testRoom.enemyCount)
+player1 = player()
+player1.createPlayer()
+gameActive = True
+while gameActive:
 
-for enemy in testRoom.enemies:
-    print(enemy.name, "| HP:", enemy.hp, "| Damage:", enemy.damage)
+    print("---NYTT ROM---")
+    currentRoom = generateRoom()
+    print(f"Du har kommet til et rom med {currentRoom.enemyCount} fiender")
 
-print(armorPull().name)
-print(lootChance())
+    for enemies in currentRoom.enemies:
+        print("Du havner i en episk kamp")
+        fight(player1, enemies)
+
