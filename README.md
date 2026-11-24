@@ -9,3 +9,12 @@ Fikk litt hjelp av ki til å forklare meg hvordan alle random funksjonene funger
 TING Å FIKSE:
 Spillet bugger seg om du dør i kamp
 Legg til system med våpen
+
+# Dungeon-Crawler tekst basert spill
+## Om Prosjektet
+Spillet er en tekst basert dungeon crawler som fungerer ved at du går gjennom rom i en dungeon og møter på fiender du kan ha kamp med. Beseirer du et rom blir du belønnet med et tilfeldig gear, enten rustning eller våpen. Målet er å prøve å komme så langt som mulig og beseire flest mulig fiender.
+
+## Hvordan fungerer spillet
+Spillet er delt inn i flere faser.
+
+Helt til å begynne med så får man lage navn til karakteren sin før noe mer skjer.
