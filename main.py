@@ -126,32 +126,6 @@ class room:
         self.difficulty = difficulty
         self.enemyCount = enemyCount
         self.enemies = []
-        self.loot = []
-
-
-class player:
-    def __init__(self):
-        self.hp = 200
-        self.armor = 1
-        self.armorPiece = None
-        self.heldWeapon = weaponTable["sword"][0]
-        self.wealth = 0
-        self.kills = 0
-
-    def hpChange(self, difference): #Metode for å lettere endre hp
-            self.hp += difference
-
-    def createPlayer(self): #Lar spiller opprette navn til karakteren
-        name = input("Skriv inn navnet på karakteren din:")
-        self.name = name
-
-    def attack(self): #Genererer en damage basert på våpenet spilleren holder
-        rng = randint(1, 100)
-    
-        if self.heldWeapon.critChance >= rng:
-            return self.heldWeapon.damage * 2
-        else:
-            return self.heldWeapon.damage
 
 
 class enemy:
@@ -184,13 +158,36 @@ class swede(enemy):
         self.name = name
 
 
+class player:
+    def __init__(self):
+        self.hp = 200
+        self.armor = 1
+        self.armorPiece = None
+        self.heldWeapon = weaponTable["sword"][0]
+        self.wealth = 0
+        self.kills = 0
+
+    def hpChange(self, difference): #Metode for å lettere endre hp
+            self.hp += difference
+
+    def createPlayer(self): #Lar spiller opprette navn til karakteren
+        name = input("Skriv inn navnet på karakteren din:")
+        self.name = name
+
+    def attack(self): #Genererer en damage basert på våpenet spilleren holder
+        rng = randint(1, 100)
+    
+        if self.heldWeapon.critChance >= rng:
+            return self.heldWeapon.damage * 2
+        else:
+            return self.heldWeapon.damage
+
 class armor:
     def __init__(self, name, armorPoints, armorType, rarity):
         self.name = name
         self.defense = armorPoints
         self.armorType = armorType
         self.rarity = rarity
-
 
 class weapon:
     def __init__(self, name, damage, critChance, weaponType, rarity):
