@@ -19,10 +19,17 @@ def generateEnemy(difficulty):
     hp = int(20*difficulty*uniform(0.8, 1.2)) # Setter hp og damage for fiender basert på difficulty
     damage = int(5*difficulty*uniform(0.8, 1.2))
 
-    names = ["Goblin", "Skeleton", "Zombie", "Swede"]
-    name = random.choice(names)
+    enemyType = random.choice(["Goblin", "Skeleton", "Zombie", "Swede"])
 
-    return enemy(hp, damage, name) # Genererer en fiende basert på parameterene som blir generert i funksjonen
+    if enemyType == "Goblin": #Genererer fiende av en tilfeldig klasse med hp og damage bestemt ovenfor, gir fienden et navn
+        return goblin(hp, damage, "Goblin", random.choice(["Grimnak", "Skarn", "Igdut"]))
+    elif enemyType == "Skeleton":
+        return skeleton(hp, damage, "Skeleton", random.choice(["Bein", "Skelly"]))
+    elif enemyType == "Zombie":
+        return zombie(hp, damage, "Zombie", random.choice(["Steve", "Flesh"]))
+    elif enemyType == "Swede":
+        return swede(hp, damage, "Swede", random.choice(["Björn", "Göran", "Johansson"]))
+
 
 def lootChance(): # 2 er rare, 1 er uncommon og 0 er common, en funksjon for å velge hva loot som blir generert i en loot encounter, 10% for rare, 30% for uncommon og 60% for common
     rng = max(1, randint(1, 100)-(globalDifficulty-1))
@@ -71,7 +78,7 @@ def fight(player, enemy): # Hoved funksjonen rundt kamp systemet
     global gameActive
     while player.hp > 0 and enemy.hp > 0: #Sjekker om fienden eller spilleren er død før kampen startes
         print(f"{player.name}: {player.hp}") #printer hp til spiller og fiende
-        print(f"{enemy.name} (fiende): {enemy.hp}")
+        print(f"{enemy.name} the {enemy.race} (fiende): {enemy.hp}")
 
         choice1 = choice("Angrip", "Flykt") #1 for angrip og 2 for flykt, velger man angrip så starter man angrips fasen
 
@@ -100,6 +107,18 @@ def fight(player, enemy): # Hoved funksjonen rundt kamp systemet
     if enemy.hp <= 0: #Om fiende dør så får man beseiret den
         print(f"Du Beseiret {enemy.name}")
         player.kills += 1
+
+def newRoom(player): #Bare det som printes og vises for hvert nytt rom ramset opp i en funksjon i stedet for å inkludere det i while løkken, litt mer oversiktlig og lettere å lese
+    print("---NYTT ROM---")
+    currentRoom = generateRoom()
+    print(f"Du har kommet til et rom med {currentRoom.enemyCount} fiender")
+    
+    for enemies in currentRoom.enemies: #Lager lik antall encounters som det er fiender
+        print("---Du havner i en episk kamp---")
+        fight(player, enemies)
+    
+        if not gameActive:
+            break
 
 
 class room: 
@@ -136,13 +155,33 @@ class player:
 
 
 class enemy:
-    def __init__(self, hp, damage, name):
+    def __init__(self, hp, damage, race):
         self.hp = hp
         self.damage = damage
-        self.name = name
+        self.race = race
 
     def hpChange(self, difference): #Samme metode for å endre hp som i player
         self.hp += difference
+
+class goblin(enemy):
+    def __init__(self, hp, damage, race, name):
+        super().__init__(hp, damage, race)
+        self.name = name
+
+class zombie(enemy):
+    def __init__(self, hp, damage, race, name):
+        super().__init__(hp, damage, race)
+        self.name = name
+
+class skeleton(enemy):
+    def __init__(self, hp, damage, race, name):
+        super().__init__(hp, damage, race)
+        self.name = name
+
+class swede(enemy):
+    def __init__(self, hp, damage, race, name):
+        super().__init__(hp, damage, race)
+        self.name = name
 
 
 class armor:
@@ -172,18 +211,6 @@ armorTable = {
 weaponTable = {
     "sword": [weapon("Rusty sword", 30, 10, "s", "common"), weapon("Sharp sword", 60, 20, "s", "uncommon"), weapon("Stab machine", 100, 40, "s", "rare")]
 }
-
-def newRoom(player): #Bare det som printes og vises for hvert nytt rom ramset opp i en funksjon i stedet for å inkludere det i while løkken, litt mer oversiktlig og lettere å lese
-    print("---NYTT ROM---")
-    currentRoom = generateRoom()
-    print(f"Du har kommet til et rom med {currentRoom.enemyCount} fiender")
-    
-    for enemies in currentRoom.enemies: #Lager lik antall encounters som det er fiender
-        print("---Du havner i en episk kamp---")
-        fight(player, enemies)
-    
-        if not gameActive:
-            break
 
 
 globalDifficulty = 3
